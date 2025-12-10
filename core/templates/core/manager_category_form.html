@@ -1,0 +1,17 @@
+{% extends 'core/base.html' %} 
+{% block title %}Add Category{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">➕ Add New Category</h1>
+
+    <div class="card p-4 shadow-sm">
+        <form method="POST">
+            {% csrf_token %}
+            
+            {{ form.as_p }} 
+            
+            <button type="submit" class="btn btn-success mt-3">Create Category</button>
+            <a href="{% url 'manager_menu_list' %}" class="btn btn-secondary mt-3">Cancel</a>
+        </form>
+    </div>
+{% endblock content %}

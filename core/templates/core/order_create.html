@@ -1,0 +1,83 @@
+{% extends 'core/base.html' %} 
+
+{% block title %}Place Order{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">🛒 Place Your Order</h1>
+    <p class="lead">Select the quantity for each item you wish to order.</p>
+
+    {% if menu_data %}
+        <form method="POST" action="{% url 'place_order' %}">
+            {% csrf_token %}
+            
+            {% for category, items in menu_data.items %}
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        <h3 class="h5 mb-0">{{ category.name }}</h3>
+                    </div>
+                    
+                    <ul class="list-group list-group-flush">
+                        {% for item in items %}
+                            <li class="list-group-item">
+                                <div class="row align-items-center">
+                                    
+                                    <div class="col-6">
+                                        <p class="mb-0 fw-bold">{{ item.name }}</p>
+                                        {% if item.description %}
+                                            <small class="text-muted">{{ item.description|truncatechars:50 }}</small>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="col-3 text-end fw-bold">
+                                        TK{{ item.price|floatformat:2 }}
+                                    </div>
+                                    
+                                    <div class="col-3">
+                                        {% if item.stock_quantity > 0 %}
+                                            <input 
+                                                type="number" 
+                                                name="item_{{ item.id }}" 
+                                                class="form-control form-control-sm" 
+                                                value="0" 
+                                                min="0" 
+                                                max="{{ item.stock_quantity }}"
+                                                placeholder="Qty"
+                                            >
+                                            {% if item.stock_quantity <= 5 %}
+                                                <small class="text-warning">Only {{ item.stock_quantity }} left!</small>
+                                            {% endif %}
+                                        {% else %}
+                                            <input 
+                                                type="number" 
+                                                value="0" 
+                                                disabled 
+                                                placeholder="Sold Out" 
+                                                class="form-control form-control-sm"
+                                            >
+                                            <small class="text-danger">Sold Out</small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item">
+                                <p class="text-center text-muted mb-0">No items are currently available in this category.</p>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+
+            <div class="mt-4 mb-5 text-center">
+                <button type="submit" class="btn btn-lg btn-warning shadow">
+                    Place Order Now
+                </button>
+            </div>
+        </form>
+
+    {% else %}
+        <div class="alert alert-info">
+            The menu is currently empty or no items are in stock. Orders cannot be placed.
+        </div>
+    {% endif %}
+{% endblock content %}
