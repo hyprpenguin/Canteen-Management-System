@@ -31,6 +31,7 @@ class Staff(models.Model):
     user=models.OneToOneField(User, on_delete=models.CASCADE)
 
     employee_id=models.CharField(max_length=6, unique=True)
+    is_management = models.BooleanField(default=False)
     department=models.CharField(max_length=3, blank=True, null=True)
     mobile_number=models.CharField(max_length=14, blank=True, null=True)
     is_active = models.BooleanField(default=True)
@@ -48,7 +49,6 @@ class Category(models.Model):
         return self.name
     
     class Meta:
-        # Orders categories alphabetically by default
         ordering = ['name'] 
         verbose_name_plural = "Categories"
 
@@ -56,6 +56,7 @@ class MenuItem(models.Model):
     name=models.CharField(max_length=50)
 
     category=models.ForeignKey(Category, on_delete=models.PROTECT)
+    stock_quantity = models.IntegerField(default=0)
     description=models.TextField(blank=True, null=True)
     price=models.DecimalField(max_digits=5, decimal_places=2)
     is_available=models.BooleanField(default=True)
@@ -64,7 +65,6 @@ class MenuItem(models.Model):
         return f"{self.name} ({self.category.name})"
     
     class Meta:
-        # Ensures items are listed alphabetically
         ordering = ['name']
 
 class Order(models.Model):
@@ -131,7 +131,6 @@ class Order(models.Model):
         return f"Order #{self.id} (Anonymous)"
     
     class Meta:
-        # Orders are displayed by the newest one first
         ordering = ['-order_time']
 
 class OrderDetails(models.Model):
@@ -147,8 +146,3 @@ class OrderDetails(models.Model):
         verbose_name = "Order Detail"
         verbose_name_plural = "Order Details"
         
-        
-
-
-
-# Create your models here.

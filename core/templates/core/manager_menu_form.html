@@ -1,0 +1,23 @@
+{% extends 'core/base.html' %} 
+{% block title %}Menu Item Form{% endblock %}
+
+{% block content %}
+    {% if object %}
+        <h1 class="mb-4">✏️ Edit Menu Item: {{ object.name }}</h1>
+    {% else %}
+        <h1 class="mb-4">➕ Add New Menu Item</h1>
+    {% endif %}
+
+    <div class="card p-4 shadow-sm">
+        <form method="POST">
+            {% csrf_token %}
+            
+            {{ form.as_p }} 
+            
+            <button type="submit" class="btn btn-success mt-3">
+                {% if object %}Save Changes{% else %}Create Item{% endif %}
+            </button>
+            <a href="{% url 'manager_menu_list' %}" class="btn btn-secondary mt-3">Cancel</a>
+        </form>
+    </div>
+{% endblock content %}
